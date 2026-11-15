@@ -31,9 +31,15 @@ import com.example.mobileappporject.ui.auth.AuthAccent
 import com.example.mobileappporject.ui.auth.AuthCanvas
 import com.example.mobileappporject.ui.auth.AuthInk
 import com.example.mobileappporject.ui.auth.AuthMutedInk
+import com.google.firebase.auth.FirebaseAuth
 
 @Composable
-fun HomeScreen(userName: String = "Alex") {
+fun HomeScreen(userName: String? = null) {
+    val currentUser = FirebaseAuth.getInstance().currentUser
+    val displayName = userName ?: currentUser?.displayName?.ifBlank { null }
+        ?: currentUser?.email?.substringBefore("@")?.replace(".", " ")?.capitalizeWords()
+        ?: "Learner"
+
     Column(
         modifier = Modifier
             .fillMaxSize()
@@ -48,7 +54,7 @@ fun HomeScreen(userName: String = "Alex") {
         ) {
             Column(modifier = Modifier.weight(1f)) {
                 Text("Welcome back,", color = AuthMutedInk, fontSize = 14.sp)
-                Text(userName, color = AuthInk, fontSize = 24.sp, fontWeight = FontWeight.Bold)
+                Text(displayName, color = AuthInk, fontSize = 24.sp, fontWeight = FontWeight.Bold)
             }
             Surface(
                 shape = CircleShape,
@@ -146,3 +152,6 @@ fun HomeScreen(userName: String = "Alex") {
         }
     }
 }
+
+private fun String.capitalizeWords(): String =
+    split(" ").joinToString(" ") { word -> word.replaceFirstChar { if (it.isLowerCase()) it.titlecase() else it.toString() } }

@@ -5,10 +5,13 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModel
 import com.example.mobileappporject.ui.auth.login.isValidEmail
+import com.google.firebase.auth.FirebaseAuth
 
 class RegisterViewModel : ViewModel() {
     var state by mutableStateOf(RegisterState())
         private set
+
+    private val auth: FirebaseAuth = FirebaseAuth.getInstance()
 
     fun onEvent(event: RegisterEvent) {
         state = when (event) {
@@ -32,10 +35,18 @@ class RegisterViewModel : ViewModel() {
                         "Please make sure your passwords match."
                     else -> null
                 }
-                state.copy(
-                    message = error ?: "Verification code sent (demo).",
-                    isComplete = error == null
-                )
+                if (error != null) {
+                    state.copy(message = error, isComplete = false)
+                } else {
+                    auth.createUserWithEmailAndPassword(state.email, state.password)
+                        .addOnSuccessListener {
+                            state = state.copy(message = null, isComplete = true)
+                        }
+                        .addOnFailureListener { e ->
+                            state = state.copy(message = e.localizedMessage ?: "Registration failed.", isComplete = false)
+                        }
+                    state
+                }
             }
             RegisterEvent.ClearCompletion -> state.copy(isComplete = false)
         }

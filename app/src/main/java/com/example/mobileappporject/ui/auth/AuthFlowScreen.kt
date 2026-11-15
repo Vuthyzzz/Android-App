@@ -53,7 +53,7 @@ fun AuthFlowScreen(onLoginSuccess: () -> Unit) {
 
     LaunchedEffect(registerViewModel.state.isComplete) {
         if (registerViewModel.state.isComplete) {
-            startVerification(registerViewModel.state.email, VerificationPurpose.ACCOUNT)
+            onLoginSuccess()
             registerViewModel.onEvent(RegisterEvent.ClearCompletion)
         }
     }

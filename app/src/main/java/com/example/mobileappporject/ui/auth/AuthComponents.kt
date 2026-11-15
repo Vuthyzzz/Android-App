@@ -48,22 +48,23 @@ internal fun AuthBrandHeader() {
     ) {
         Box(
             modifier = Modifier
-                .size(42.dp),
+                .size(42.dp)
+                .background(AuthAccent, RoundedCornerShape(14.dp)),
             contentAlignment = Alignment.Center
         ) {
-
+            Text("W", color = Color.White, fontWeight = FontWeight.Bold, fontSize = 22.sp)
         }
         Text(
-            "",
+            "Wordwise",
             modifier = Modifier.padding(start = 11.dp),
-
+            color = AuthInk,
             fontSize = 20.sp,
             fontWeight = FontWeight.Bold
         )
         Spacer(modifier = Modifier.weight(1f))
         Surface(color = Color(0xFFEEF0FF), shape = CircleShape) {
             Text(
-                "",
+                "LEARN DAILY",
                 modifier = Modifier.padding(horizontal = 12.dp, vertical = 8.dp),
                 color = AuthAccent,
                 fontSize = 10.sp,

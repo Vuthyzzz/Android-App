@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "975691350486",
+    "project_id": "androidappdb-fc655",
+    "storage_bucket": "androidappdb-fc655.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:975691350486:android:bb3c17701e2724ce9fa477",
+        "android_client_info": {
+          "package_name": "vuthyAndroid.com"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAxPjw1uLph2hsI4NdnxyK5DetBCIktQtA"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
