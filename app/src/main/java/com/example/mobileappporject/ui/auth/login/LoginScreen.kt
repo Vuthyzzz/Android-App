@@ -1,5 +1,6 @@
 package com.example.mobileappporject.ui.auth.login
 
+import android.R
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.height
@@ -13,7 +14,9 @@ import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.example.mobileappporject.ui.auth.AuthAccent
+import com.example.mobileappporject.ui.auth.AuthDivider
 import com.example.mobileappporject.ui.auth.AuthFeedback
+import com.example.mobileappporject.ui.auth.AuthGoogleButton
 import com.example.mobileappporject.ui.auth.AuthInput
 import com.example.mobileappporject.ui.auth.AuthMutedInk
 import com.example.mobileappporject.ui.auth.AuthNavigationPrompt
@@ -25,7 +28,8 @@ fun LoginScreen(
     state: LoginState,
     onEvent: (LoginEvent) -> Unit,
     onRegister: () -> Unit,
-    onForgotPassword: () -> Unit
+    onForgotPassword: () -> Unit,
+    onGoogleSignIn: () -> Unit
 ) {
     AuthPage(
         title = "Welcome back",
@@ -33,6 +37,7 @@ fun LoginScreen(
     ) {
         Text("Sign in", fontSize = 20.sp)
         Spacer(Modifier.height(18.dp))
+
         AuthInput(
             value = state.email,
             onValueChange = { onEvent(LoginEvent.EmailChanged(it)) },
@@ -62,6 +67,10 @@ fun LoginScreen(
                 Text("Forgot password?", color = AuthAccent, fontSize = 13.sp)
             }
         }
+        AuthGoogleButton(onClick = onGoogleSignIn)
+
+        AuthDivider("OR SIGN IN WITH EMAIL")
+
         AuthFeedback(state.message)
         AuthPrimaryButton("Sign in") { onEvent(LoginEvent.Submit) }
         Spacer(Modifier.height(8.dp))

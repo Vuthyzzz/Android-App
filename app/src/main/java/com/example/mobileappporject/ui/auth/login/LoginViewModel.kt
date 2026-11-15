@@ -12,6 +12,16 @@ class LoginViewModel : ViewModel() {
 
     private val auth: FirebaseAuth = FirebaseAuth.getInstance()
 
+    fun onGoogleAccountSelected(email: String) {
+        state = state.copy(
+            email = email,
+            password = "",
+            isGoogleLogin = true,
+            requiresVerification = true,
+            message = "Google account selected. Please enter the verification code."
+        )
+    }
+
     fun onEvent(event: LoginEvent) {
         state = when (event) {
             is LoginEvent.EmailChanged -> state.copy(email = event.value, message = null)
@@ -19,23 +29,64 @@ class LoginViewModel : ViewModel() {
             is LoginEvent.RememberMeChanged -> state.copy(rememberMe = event.value)
             LoginEvent.TogglePasswordVisibility ->
                 state.copy(passwordVisible = !state.passwordVisible)
+            LoginEvent.GoogleSignInClicked -> {
+                val googleAccountEmail = if (state.email.isValidEmail()) state.email else "user.google@gmail.com"
+                state.copy(
+                    email = googleAccountEmail,
+                    password = "",
+                    requiresVerification = true,
+                    isGoogleLogin = true,
+                    message = "Google Sign-In selected. Please enter your Gmail password to continue."
+                )
+            }
             LoginEvent.Submit -> {
-                if (!state.email.isValidEmail()) {
-                    state.copy(message = "Please enter a valid email address.")
-                } else if (state.password.length < 8) {
-                    state.copy(message = "Please use a password with at least 8 characters.")
+                if (state.isGoogleLogin) {
+                    if (state.email.isBlank()) {
+                        state.copy(message = "Please enter a Google email address.")
+                    } else if (state.password.length < 8) {
+                        state.copy(message = "Please enter your Gmail password to continue.")
+                    } else {
+                        auth.signInWithEmailAndPassword(state.email, state.password)
+                            .addOnSuccessListener {
+                                state = state.copy(
+                                    requiresVerification = true,
+                                    isLoggedIn = false,
+                                    message = "A verification code has been sent to ${state.email}."
+                                )
+                            }
+                            .addOnFailureListener { e ->
+                                state = state.copy(message = e.localizedMessage ?: "Google sign-in failed.")
+                            }
+                        state
+                    }
                 } else {
-                    auth.signInWithEmailAndPassword(state.email, state.password)
-                        .addOnSuccessListener {
-                            state = state.copy(isLoggedIn = true, message = null)
-                        }
-                        .addOnFailureListener { e ->
-                            state = state.copy(message = e.localizedMessage ?: "Sign in failed.")
-                        }
-                    state
+                    if (!state.email.isValidEmail()) {
+                        state.copy(message = "Please enter a valid email address.")
+                    } else if (state.password.length < 8) {
+                        state.copy(message = "Please use a password with at least 8 characters.")
+                    } else {
+                        auth.signInWithEmailAndPassword(state.email, state.password)
+                            .addOnSuccessListener {
+                                state = state.copy(requiresVerification = true, message = null)
+                            }
+                            .addOnFailureListener { e ->
+                                state = state.copy(message = e.localizedMessage ?: "Sign in failed.")
+                            }
+                        state
+                    }
                 }
             }
+            LoginEvent.ClearVerificationPending -> state.copy(
+                requiresVerification = false,
+                isLoggedIn = false,
+                isGoogleLogin = false,
+                message = null
+            )
         }
+    }
+
+    fun completeLoginAfterVerification() {
+        state = state.copy(isLoggedIn = true, requiresVerification = false, isGoogleLogin = false)
     }
 }
 

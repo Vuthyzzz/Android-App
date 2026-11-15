@@ -62,8 +62,9 @@ fun RegisterScreen(
             passwordVisible = state.passwordVisible,
             onTogglePassword = { onEvent(RegisterEvent.TogglePasswordVisibility) }
         )
+        Spacer(Modifier.height(14.dp))
         AuthFeedback(state.message)
-        AuthPrimaryButton("Create account") { onEvent(RegisterEvent.Submit) }
+        AuthPrimaryButton( "Create account") { onEvent(RegisterEvent.Submit) }
         Spacer(Modifier.height(8.dp))
         AuthNavigationPrompt("Already have an account?", "Sign in", onLogin)
     }

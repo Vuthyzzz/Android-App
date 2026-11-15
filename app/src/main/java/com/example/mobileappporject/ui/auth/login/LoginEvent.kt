@@ -6,4 +6,6 @@ sealed interface LoginEvent {
     data class RememberMeChanged(val value: Boolean) : LoginEvent
     data object TogglePasswordVisibility : LoginEvent
     data object Submit : LoginEvent
+    data object GoogleSignInClicked : LoginEvent
+    data object ClearVerificationPending : LoginEvent
 }

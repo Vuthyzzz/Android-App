@@ -33,6 +33,7 @@ fun ForgotPasswordScreen(
             placeholder = "you@example.com",
             keyboardType = KeyboardType.Email
         )
+        Spacer(Modifier.height(8.dp))
         AuthFeedback(state.message)
         AuthPrimaryButton("Send verification code") {
             onEvent(ForgotPasswordEvent.Submit)

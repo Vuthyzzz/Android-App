@@ -12,7 +12,12 @@
           "package_name": "com.example.mobileappporject"
         }
       },
-      "oauth_client": [],
+      "oauth_client": [
+        {
+          "client_id": "975691350486-rte9fsj11r3mh91ke59s7i8428c3gdnt.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
       "api_key": [
         {
           "current_key": "AIzaSyAxPjw1uLph2hsI4NdnxyK5DetBCIktQtA"
@@ -20,7 +25,12 @@
       ],
       "services": {
         "appinvite_service": {
-          "other_platform_oauth_client": []
+          "other_platform_oauth_client": [
+            {
+              "client_id": "975691350486-rte9fsj11r3mh91ke59s7i8428c3gdnt.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
         }
       }
     },
@@ -31,7 +41,12 @@
           "package_name": "vuthyAndroid.com"
         }
       },
-      "oauth_client": [],
+      "oauth_client": [
+        {
+          "client_id": "975691350486-rte9fsj11r3mh91ke59s7i8428c3gdnt.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
       "api_key": [
         {
           "current_key": "AIzaSyAxPjw1uLph2hsI4NdnxyK5DetBCIktQtA"
@@ -39,7 +54,12 @@
       ],
       "services": {
         "appinvite_service": {
-          "other_platform_oauth_client": []
+          "other_platform_oauth_client": [
+            {
+              "client_id": "975691350486-rte9fsj11r3mh91ke59s7i8428c3gdnt.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
         }
       }
     }

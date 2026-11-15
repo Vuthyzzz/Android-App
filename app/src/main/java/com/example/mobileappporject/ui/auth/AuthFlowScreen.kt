@@ -10,6 +10,7 @@ import androidx.lifecycle.viewmodel.compose.viewModel
 import com.example.mobileappporject.ui.auth.forgotpassword.ForgotPasswordEvent
 import com.example.mobileappporject.ui.auth.forgotpassword.ForgotPasswordScreen
 import com.example.mobileappporject.ui.auth.forgotpassword.ForgotPasswordViewModel
+import com.example.mobileappporject.ui.auth.login.LoginEvent
 import com.example.mobileappporject.ui.auth.login.LoginScreen
 import com.example.mobileappporject.ui.auth.login.LoginViewModel
 import com.example.mobileappporject.ui.auth.register.RegisterEvent
@@ -32,7 +33,10 @@ private enum class AuthRoute {
 }
 
 @Composable
-fun AuthFlowScreen(onLoginSuccess: () -> Unit) {
+fun AuthFlowScreen(
+    onLoginSuccess: () -> Unit,
+    onGoogleSignInRequest: (() -> Unit)? = null
+) {
     var route by remember { mutableStateOf(AuthRoute.LOGIN) }
     val loginViewModel: LoginViewModel = viewModel()
     val registerViewModel: RegisterViewModel = viewModel()
@@ -45,9 +49,16 @@ fun AuthFlowScreen(onLoginSuccess: () -> Unit) {
         route = AuthRoute.VERIFICATION
     }
 
+    LaunchedEffect(loginViewModel.state.requiresVerification) {
+        if (loginViewModel.state.requiresVerification) {
+            startVerification(loginViewModel.state.email, VerificationPurpose.ACCOUNT)
+        }
+    }
+
     LaunchedEffect(loginViewModel.state.isLoggedIn) {
         if (loginViewModel.state.isLoggedIn) {
             onLoginSuccess()
+            loginViewModel.onEvent(LoginEvent.ClearVerificationPending)
         }
     }
 
@@ -73,6 +84,8 @@ fun AuthFlowScreen(onLoginSuccess: () -> Unit) {
                 )
                 route = AuthRoute.RESET_PASSWORD
             } else {
+                loginViewModel.completeLoginAfterVerification()
+                onLoginSuccess()
                 route = AuthRoute.LOGIN
             }
             verificationViewModel.onEvent(VerificationEvent.ClearCompletion)
@@ -91,7 +104,11 @@ fun AuthFlowScreen(onLoginSuccess: () -> Unit) {
             state = loginViewModel.state,
             onEvent = loginViewModel::onEvent,
             onRegister = { route = AuthRoute.REGISTER },
-            onForgotPassword = { route = AuthRoute.FORGOT_PASSWORD }
+            onForgotPassword = { route = AuthRoute.FORGOT_PASSWORD },
+            onGoogleSignIn = {
+                // On Google Sign In, we directly start the verification flow
+                startVerification("user@example.com", VerificationPurpose.ACCOUNT)
+            }
         )
         AuthRoute.REGISTER -> RegisterScreen(
             state = registerViewModel.state,

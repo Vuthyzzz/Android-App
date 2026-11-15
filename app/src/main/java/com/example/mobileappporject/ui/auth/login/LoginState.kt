@@ -6,5 +6,7 @@ data class LoginState(
     val rememberMe: Boolean = true,
     val passwordVisible: Boolean = false,
     val message: String? = null,
-    val isLoggedIn: Boolean = false
+    val isLoggedIn: Boolean = false,
+    val requiresVerification: Boolean = false,
+    val isGoogleLogin: Boolean = false
 )

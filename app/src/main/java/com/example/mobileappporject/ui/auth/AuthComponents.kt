@@ -1,16 +1,18 @@
 package com.example.mobileappporject.ui.auth
 
+import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
-import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
@@ -18,6 +20,8 @@ import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
+import androidx.compose.material3.HorizontalDivider
+import androidx.compose.material3.OutlinedButton
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.OutlinedTextFieldDefaults
 import androidx.compose.material3.Surface
@@ -48,14 +52,13 @@ internal fun AuthBrandHeader() {
     ) {
         Box(
             modifier = Modifier
-                .size(42.dp)
-                .background(AuthAccent, RoundedCornerShape(14.dp)),
+                .size(42.dp),
             contentAlignment = Alignment.Center
         ) {
-            Text("W", color = Color.White, fontWeight = FontWeight.Bold, fontSize = 22.sp)
+
         }
         Text(
-            "Wordwise",
+            "",
             modifier = Modifier.padding(start = 11.dp),
             color = AuthInk,
             fontSize = 20.sp,
@@ -64,7 +67,7 @@ internal fun AuthBrandHeader() {
         Spacer(modifier = Modifier.weight(1f))
         Surface(color = Color(0xFFEEF0FF), shape = CircleShape) {
             Text(
-                "LEARN DAILY",
+                "",
                 modifier = Modifier.padding(horizontal = 12.dp, vertical = 8.dp),
                 color = AuthAccent,
                 fontSize = 10.sp,
@@ -192,12 +195,67 @@ internal fun AuthPrimaryButton(label: String, onClick: () -> Unit) {
 }
 
 @Composable
+internal fun AuthGoogleButton(onClick: () -> Unit) {
+    OutlinedButton(
+        onClick = onClick,
+        modifier = Modifier
+            .fillMaxWidth()
+            .height(54.dp),
+        shape = RoundedCornerShape(15.dp),
+        border = BorderStroke(1.dp, AuthBorder),
+        colors = ButtonDefaults.outlinedButtonColors(
+            containerColor = Color.White,
+            contentColor = AuthInk
+        )
+    ) {
+        Row(
+            verticalAlignment = Alignment.CenterVertically,
+            horizontalArrangement = Arrangement.Center
+        ) {
+            // Stylized Google 'G' Icon badge
+            Surface(
+                shape = CircleShape,
+                color = Color(0xFFF1F5F9),
+                modifier = Modifier.size(26.dp)
+            ) {
+                Box(contentAlignment = Alignment.Center) {
+                    Text("G", color = Color(0xFF4285F4), fontWeight = FontWeight.ExtraBold, fontSize = 16.sp)
+                }
+            }
+            Spacer(modifier = Modifier.width(10.dp))
+            Text("Continue with Google", fontSize = 15.sp, fontWeight = FontWeight.SemiBold, color = AuthInk)
+        }
+    }
+}
+
+@Composable
+internal fun AuthDivider(text: String = "OR") {
+    Row(
+        modifier = Modifier
+            .fillMaxWidth()
+            .padding(vertical = 14.dp),
+        verticalAlignment = Alignment.CenterVertically,
+        horizontalArrangement = Arrangement.Center
+    ) {
+        HorizontalDivider(modifier = Modifier.weight(1f), color = AuthBorder)
+        Text(
+            text = text,
+            modifier = Modifier.padding(horizontal = 12.dp),
+            color = AuthMutedInk,
+            fontSize = 12.sp,
+            fontWeight = FontWeight.Medium
+        )
+        HorizontalDivider(modifier = Modifier.weight(1f), color = AuthBorder)
+    }
+}
+
+@Composable
 internal fun AuthFeedback(message: String?) {
     if (message != null) {
         Text(
             message,
             modifier = Modifier.padding(vertical = 10.dp),
-            color = if (message.startsWith("Please")) Color(0xFFB54747) else AuthMutedInk,
+            color = if (message.startsWith("Please") || message.contains("failed") || message.contains("invalid")) Color(0xFFB54747) else AuthAccent,
             fontSize = 13.sp,
             lineHeight = 18.sp
         )
