@@ -35,7 +35,8 @@ private enum class AuthRoute {
 @Composable
 fun AuthFlowScreen(
     onLoginSuccess: () -> Unit,
-    onGoogleSignInRequest: (() -> Unit)? = null
+    onGoogleSignInRequest: (() -> Unit)? = null,
+    initialVerificationEmail: String? = null
 ) {
     var route by remember { mutableStateOf(AuthRoute.LOGIN) }
     val loginViewModel: LoginViewModel = viewModel()
@@ -44,14 +45,17 @@ fun AuthFlowScreen(
     val verificationViewModel: VerificationViewModel = viewModel()
     val resetPasswordViewModel: ResetPasswordViewModel = viewModel()
 
-    fun startVerification(email: String, purpose: VerificationPurpose) {
-        verificationViewModel.start(email, purpose)
-        route = AuthRoute.VERIFICATION
+    LaunchedEffect(initialVerificationEmail) {
+        if (!initialVerificationEmail.isNullOrBlank()) {
+            verificationViewModel.start(initialVerificationEmail, VerificationPurpose.ACCOUNT)
+            route = AuthRoute.VERIFICATION
+        }
     }
 
     LaunchedEffect(loginViewModel.state.requiresVerification) {
         if (loginViewModel.state.requiresVerification) {
-            startVerification(loginViewModel.state.email, VerificationPurpose.ACCOUNT)
+            verificationViewModel.start(loginViewModel.state.email, VerificationPurpose.ACCOUNT)
+            route = AuthRoute.VERIFICATION
         }
     }
 
@@ -71,7 +75,7 @@ fun AuthFlowScreen(
 
     LaunchedEffect(forgotPasswordViewModel.state.isComplete) {
         if (forgotPasswordViewModel.state.isComplete) {
-            startVerification(forgotPasswordViewModel.state.email, VerificationPurpose.PASSWORD_RESET)
+            verificationViewModel.start(forgotPasswordViewModel.state.email, VerificationPurpose.PASSWORD_RESET)
             forgotPasswordViewModel.onEvent(ForgotPasswordEvent.ClearCompletion)
         }
     }
@@ -106,8 +110,9 @@ fun AuthFlowScreen(
             onRegister = { route = AuthRoute.REGISTER },
             onForgotPassword = { route = AuthRoute.FORGOT_PASSWORD },
             onGoogleSignIn = {
-                // On Google Sign In, we directly start the verification flow
-                startVerification("user@example.com", VerificationPurpose.ACCOUNT)
+                if (onGoogleSignInRequest != null) {
+                    onGoogleSignInRequest()
+                }
             }
         )
         AuthRoute.REGISTER -> RegisterScreen(

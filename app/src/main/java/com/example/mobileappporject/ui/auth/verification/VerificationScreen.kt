@@ -41,6 +41,8 @@ fun VerificationScreen(
             placeholder = "123456",
             keyboardType = KeyboardType.Number
         )
+
+        Spacer(Modifier.height(14.dp))
         AuthFeedback(state.message)
         AuthPrimaryButton("Verify code") { onEvent(VerificationEvent.Verify) }
         TextButton(onClick = { onEvent(VerificationEvent.Resend) }) {

@@ -220,37 +220,50 @@ fun ProfileScreen(
             modifier = Modifier.fillMaxWidth()
         ) {
             Column(modifier = Modifier.padding(16.dp)) {
-                Text("Account & Security", color = AuthInk, fontSize = 16.sp, fontWeight = FontWeight.Bold)
-                Spacer(modifier = Modifier.height(12.dp))
-
                 Row(
                     modifier = Modifier
                         .fillMaxWidth()
-                        .clickable { viewModel.onEvent(ProfileEvent.ToggleChangeEmailDialog) }
-                        .padding(vertical = 10.dp),
+                        .clickable { viewModel.onEvent(ProfileEvent.ToggleAccountSecurity) }
+                        .padding(vertical = 6.dp),
                     horizontalArrangement = Arrangement.SpaceBetween,
                     verticalAlignment = Alignment.CenterVertically
                 ) {
-                    Column {
-                        Text("Change Email / Gmail", color = AuthInk, fontSize = 14.sp, fontWeight = FontWeight.SemiBold)
-                        Text(state.email, color = AuthMutedInk, fontSize = 12.sp)
-                    }
-                    Text("✏️", fontSize = 16.sp)
+                    Text("Account & Security", color = AuthInk, fontSize = 16.sp, fontWeight = FontWeight.Bold)
+                    Text(if (state.showAccountSecurity) "▾" else "▸", color = AuthMutedInk, fontSize = 18.sp)
                 }
 
-                Row(
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .clickable { viewModel.onEvent(ProfileEvent.ToggleChangePasswordDialog) }
-                        .padding(vertical = 10.dp),
-                    horizontalArrangement = Arrangement.SpaceBetween,
-                    verticalAlignment = Alignment.CenterVertically
-                ) {
-                    Column {
-                        Text("Change Password", color = AuthInk, fontSize = 14.sp, fontWeight = FontWeight.SemiBold)
-                        Text("Update your Firebase password", color = AuthMutedInk, fontSize = 12.sp)
+                if (state.showAccountSecurity) {
+                    Spacer(modifier = Modifier.height(12.dp))
+
+                    Row(
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .clickable { viewModel.onEvent(ProfileEvent.ToggleChangeEmailDialog) }
+                            .padding(vertical = 10.dp),
+                        horizontalArrangement = Arrangement.SpaceBetween,
+                        verticalAlignment = Alignment.CenterVertically
+                    ) {
+                        Column {
+                            Text("Change Email / Gmail", color = AuthInk, fontSize = 14.sp, fontWeight = FontWeight.SemiBold)
+                            Text(state.email, color = AuthMutedInk, fontSize = 12.sp)
+                        }
+                        Text("✏️", fontSize = 16.sp)
                     }
-                    Text("🔒", fontSize = 16.sp)
+
+                    Row(
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .clickable { viewModel.onEvent(ProfileEvent.ToggleChangePasswordDialog) }
+                            .padding(vertical = 10.dp),
+                        horizontalArrangement = Arrangement.SpaceBetween,
+                        verticalAlignment = Alignment.CenterVertically
+                    ) {
+                        Column {
+                            Text("Change Password", color = AuthInk, fontSize = 14.sp, fontWeight = FontWeight.SemiBold)
+                            Text("Update your Firebase password", color = AuthMutedInk, fontSize = 12.sp)
+                        }
+                        Text("🔒", fontSize = 16.sp)
+                    }
                 }
             }
         }

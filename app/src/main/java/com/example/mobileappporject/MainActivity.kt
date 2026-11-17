@@ -25,6 +25,7 @@ import com.google.firebase.auth.GoogleAuthProvider
 
 class MainActivity : ComponentActivity() {
     private var isLoggedInState by mutableStateOf(FirebaseAuth.getInstance().currentUser != null)
+    private var pendingVerificationEmail by mutableStateOf<String?>(null)
     private lateinit var googleSignInClient: GoogleSignInClient
 
     private val googleSignInLauncher = registerForActivityResult(
@@ -37,7 +38,11 @@ class MainActivity : ComponentActivity() {
             val idToken = account.idToken
 
             if (idToken.isNullOrBlank()) {
-                Toast.makeText(this, "Google account selected. Verification step is required.", Toast.LENGTH_SHORT).show()
+                Toast.makeText(
+                    this,
+                    "Google Sign-In is not configured for Firebase. Add the web client ID.",
+                    Toast.LENGTH_LONG
+                ).show()
                 return@registerForActivityResult
             }
 
@@ -45,9 +50,14 @@ class MainActivity : ComponentActivity() {
             FirebaseAuth.getInstance().signInWithCredential(credential)
                 .addOnCompleteListener(this) { authTask ->
                     if (authTask.isSuccessful) {
-                        isLoggedInState = true
+                        pendingVerificationEmail = email
+                        isLoggedInState = false
                     } else {
-                        Toast.makeText(this, authTask.exception?.message ?: "Google sign-in failed.", Toast.LENGTH_LONG).show()
+                        Toast.makeText(
+                            this,
+                            authTask.exception?.message ?: "Google sign-in failed.",
+                            Toast.LENGTH_LONG
+                        ).show()
                     }
                 }
         } catch (e: ApiException) {
@@ -93,8 +103,12 @@ class MainActivity : ComponentActivity() {
                         })
                     } else {
                         AuthFlowScreen(
-                            onLoginSuccess = { isLoggedInState = true },
-                            onGoogleSignInRequest = { startGoogleLogin() }
+                            onLoginSuccess = {
+                                isLoggedInState = true
+                                pendingVerificationEmail = null
+                            },
+                            onGoogleSignInRequest = { startGoogleLogin() },
+                            initialVerificationEmail = pendingVerificationEmail
                         )
                     }
                 }

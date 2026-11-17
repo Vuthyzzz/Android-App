@@ -17,8 +17,7 @@ class LoginViewModel : ViewModel() {
             email = email,
             password = "",
             isGoogleLogin = true,
-            requiresVerification = true,
-            message = "Google account selected. Please enter the verification code."
+            message = "Google account selected. Continue with Google sign-in."
         )
     }
 
@@ -34,30 +33,20 @@ class LoginViewModel : ViewModel() {
                 state.copy(
                     email = googleAccountEmail,
                     password = "",
-                    requiresVerification = true,
                     isGoogleLogin = true,
-                    message = "Google Sign-In selected. Please enter your Gmail password to continue."
+                    message = "Starting Google sign-in..."
                 )
             }
             LoginEvent.Submit -> {
                 if (state.isGoogleLogin) {
                     if (state.email.isBlank()) {
                         state.copy(message = "Please enter a Google email address.")
-                    } else if (state.password.length < 8) {
-                        state.copy(message = "Please enter your Gmail password to continue.")
                     } else {
-                        auth.signInWithEmailAndPassword(state.email, state.password)
-                            .addOnSuccessListener {
-                                state = state.copy(
-                                    requiresVerification = true,
-                                    isLoggedIn = false,
-                                    message = "A verification code has been sent to ${state.email}."
-                                )
-                            }
-                            .addOnFailureListener { e ->
-                                state = state.copy(message = e.localizedMessage ?: "Google sign-in failed.")
-                            }
-                        state
+                        state.copy(
+                            isGoogleLogin = true,
+                            requiresVerification = false,
+                            message = "Google sign-in will continue through Google authentication."
+                        )
                     }
                 } else {
                     if (!state.email.isValidEmail()) {
@@ -67,12 +56,26 @@ class LoginViewModel : ViewModel() {
                     } else {
                         auth.signInWithEmailAndPassword(state.email, state.password)
                             .addOnSuccessListener {
-                                state = state.copy(requiresVerification = true, message = null)
+                                state = state.copy(
+                                    isLoggedIn = true,
+                                    requiresVerification = false,
+                                    isGoogleLogin = false,
+                                    message = null
+                                )
                             }
                             .addOnFailureListener { e ->
-                                state = state.copy(message = e.localizedMessage ?: "Sign in failed.")
+                                state = state.copy(
+                                    message = e.localizedMessage ?: "Sign in failed.",
+                                    isLoggedIn = false,
+                                    requiresVerification = false,
+                                    isGoogleLogin = false
+                                )
                             }
-                        state
+                        state.copy(
+                            requiresVerification = false,
+                            isGoogleLogin = false,
+                            message = null
+                        )
                     }
                 }
             }

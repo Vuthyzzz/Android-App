@@ -14,6 +14,7 @@ data class ProfileState(
     val darkModeEnabled: Boolean = false,
     val selectedLanguage: String = "English",
     val showAvatarPicker: Boolean = false,
+    val showAccountSecurity: Boolean = true,
     val showChangeEmailDialog: Boolean = false,
     val showChangePasswordDialog: Boolean = false,
     val newEmailInput: String = "",

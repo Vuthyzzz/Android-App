@@ -58,6 +58,7 @@ class ProfileViewModel : ViewModel() {
             is ProfileEvent.SelectAvatar -> state.copy(avatarEmoji = event.emoji, avatarUri = null, showAvatarPicker = false)
             is ProfileEvent.CustomImageSelected -> state.copy(avatarUri = event.uri, showAvatarPicker = false)
             ProfileEvent.ToggleAvatarPicker -> state.copy(showAvatarPicker = !state.showAvatarPicker)
+            ProfileEvent.ToggleAccountSecurity -> state.copy(showAccountSecurity = !state.showAccountSecurity)
             ProfileEvent.ToggleChangeEmailDialog -> state.copy(showChangeEmailDialog = !state.showChangeEmailDialog, newEmailInput = "")
             is ProfileEvent.NewEmailInputChanged -> state.copy(newEmailInput = event.value)
             ProfileEvent.SubmitChangeEmail -> {

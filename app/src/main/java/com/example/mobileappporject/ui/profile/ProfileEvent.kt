@@ -13,6 +13,7 @@ sealed interface ProfileEvent {
     data class SelectAvatar(val emoji: String) : ProfileEvent
     data class CustomImageSelected(val uri: Uri?) : ProfileEvent
     object ToggleAvatarPicker : ProfileEvent
+    object ToggleAccountSecurity : ProfileEvent
     object ToggleChangeEmailDialog : ProfileEvent
     data class NewEmailInputChanged(val value: String) : ProfileEvent
     object SubmitChangeEmail : ProfileEvent
